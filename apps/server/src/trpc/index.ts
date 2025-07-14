@@ -1,5 +1,6 @@
 import { initTRPC } from "@trpc/server";
 import { z } from "zod";
+import { paymentsRouter } from "./payments";
 
 const t = initTRPC.create();
 
@@ -12,6 +13,7 @@ export const appRouter = router({
     .query(({ input }) => {
       return { greeting: `Hello ${input.name}!` };
     }),
+  payments: paymentsRouter,
 });
 
 export type AppRouter = typeof appRouter;

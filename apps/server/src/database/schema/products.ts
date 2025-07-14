@@ -11,6 +11,7 @@ import { user } from "./auth-schema";
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(),

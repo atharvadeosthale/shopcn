@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@better-auth/stripe": "^1.2.12",
+    "stripe": "^18.3.0"
+  }
 }

@@ -1,17 +1,13 @@
 import { z } from "zod";
-import { initTRPC } from "@trpc/server";
 import { stripe } from "../../lib/stripe";
 import { db } from "../../database/connection";
 import { inventory } from "../../database/schema/inventory";
 import { products } from "../../database/schema/products";
 import { eq } from "drizzle-orm";
-
-const t = initTRPC.create();
-const router = t.router;
-const publicProcedure = t.procedure;
+import { router, protectedProcedure } from "../index";
 
 export const paymentsRouter = router({
-  createCheckout: publicProcedure
+  createCheckout: protectedProcedure
     .input(
       z.object({
         productId: z.string(),
@@ -20,7 +16,7 @@ export const paymentsRouter = router({
         cancelUrl: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const product = await db
         .select()
         .from(products)
@@ -65,7 +61,7 @@ export const paymentsRouter = router({
           itemType: "product",
           productId: input.productId,
           quantity: input.quantity,
-          ownedBy: "temp_user",
+          ownedBy: ctx.user.id,
           checkoutId: session.id,
           paymentCompleted: false,
         })
@@ -78,7 +74,7 @@ export const paymentsRouter = router({
       };
     }),
 
-  getPaymentStatus: publicProcedure
+  getPaymentStatus: protectedProcedure
     .input(z.object({ checkoutId: z.string() }))
     .query(async ({ input }) => {
       const inventoryRecord = await db

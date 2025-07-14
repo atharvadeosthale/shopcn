@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { trpcServer } from "@hono/trpc-server";
-import { appRouter } from "./trpc";
+import { appRouter, createContext } from "./trpc";
 import { auth } from "./lib/auth";
 import "dotenv/config";
 
@@ -44,6 +44,7 @@ app.use(
   "/trpc/*",
   trpcServer({
     router: appRouter,
+    createContext,
   })
 );
 

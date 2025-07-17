@@ -7,12 +7,12 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { products } from "./products";
+import { productsTable } from "./products";
 
-export const inventory = pgTable("inventory", {
+export const inventoryTable = pgTable("inventory", {
   id: serial("id").primaryKey(),
   itemType: text("item_type").notNull(),
-  productId: text("product_id").references(() => products.id),
+  productId: text("product_id").references(() => productsTable.id),
   collectionId: text("collection_id"),
   quantity: integer("quantity").notNull(),
   ownedBy: text("owned_by")
@@ -23,5 +23,5 @@ export const inventory = pgTable("inventory", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export type InsertInventory = typeof inventory.$inferInsert;
-export type SelectInventory = typeof inventory.$inferSelect;
+export type InsertInventory = typeof inventoryTable.$inferInsert;
+export type SelectInventory = typeof inventoryTable.$inferSelect;

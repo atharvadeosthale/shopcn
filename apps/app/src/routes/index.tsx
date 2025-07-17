@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Search, Filter, Star, Download, Eye, ShoppingCart, User, Grid, List } from 'lucide-react'
+import { Search, Filter, Star, Download, Eye, ShoppingCart, User, Grid, List, TrendingUp, Zap, Crown } from 'lucide-react'
 import { useState, useMemo } from 'react'
 
 export const Route = createFileRoute('/')({
@@ -17,6 +17,8 @@ interface Component {
   category: string
   tags: string[]
   featured?: boolean
+  trending?: boolean
+  new?: boolean
 }
 
 const MOCK_COMPONENTS: Component[] = [
@@ -30,7 +32,8 @@ const MOCK_COMPONENTS: Component[] = [
     description: 'Advanced button variants with animations and micro-interactions',
     category: 'Buttons',
     tags: ['buttons', 'animations', 'variants', 'hover-effects'],
-    featured: true
+    featured: true,
+    trending: true
   },
   {
     id: 2,
@@ -53,7 +56,8 @@ const MOCK_COMPONENTS: Component[] = [
     downloads: 456,
     description: 'Complete dashboard template with charts and analytics',
     category: 'Templates',
-    tags: ['template', 'dashboard', 'charts', 'analytics']
+    tags: ['template', 'dashboard', 'charts', 'analytics'],
+    new: true
   },
   {
     id: 4,
@@ -75,7 +79,8 @@ const MOCK_COMPONENTS: Component[] = [
     downloads: 634,
     description: 'Responsive mega menu with dropdown animations',
     category: 'Navigation',
-    tags: ['navigation', 'menu', 'responsive', 'dropdown']
+    tags: ['navigation', 'menu', 'responsive', 'dropdown'],
+    trending: true
   },
   {
     id: 6,
@@ -119,7 +124,8 @@ const MOCK_COMPONENTS: Component[] = [
     downloads: 567,
     description: 'Professional contact form with file uploads and captcha',
     category: 'Forms',
-    tags: ['forms', 'contact', 'upload', 'captcha']
+    tags: ['forms', 'contact', 'upload', 'captcha'],
+    new: true
   },
   {
     id: 10,
@@ -152,7 +158,8 @@ const MOCK_COMPONENTS: Component[] = [
     downloads: 2134,
     description: 'Collection of animated loading spinners and skeletons',
     category: 'Feedback',
-    tags: ['loading', 'spinner', 'skeleton', 'animations']
+    tags: ['loading', 'spinner', 'skeleton', 'animations'],
+    trending: true
   },
   {
     id: 13,
@@ -174,7 +181,8 @@ const MOCK_COMPONENTS: Component[] = [
     downloads: 234,
     description: 'Complete e-commerce template with product listings and cart',
     category: 'Templates',
-    tags: ['template', 'ecommerce', 'products', 'cart']
+    tags: ['template', 'ecommerce', 'products', 'cart'],
+    featured: true
   },
   {
     id: 15,
@@ -301,38 +309,46 @@ function Marketplace() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center space-x-8">
-          <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-primary"></div>
-            <span className="text-xl font-bold">shopcn</span>
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="h-8 w-8 rounded-xl bg-primary shadow-lg shadow-primary/25"></div>
+              <div className="absolute inset-0 h-8 w-8 rounded-xl bg-gradient-to-tr from-primary to-primary/80 opacity-90"></div>
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">shopcn</span>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-foreground font-medium">
+            <a href="#" className="relative text-foreground font-medium group">
               Components
+              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></div>
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
               Templates
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
               Blocks
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
               Sell
             </a>
           </nav>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <button className="relative p-2 hover:bg-muted/60 rounded-xl transition-all duration-300 hover:scale-110 group">
             <ShoppingCart className="h-5 w-5" />
+            <div className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              2
+            </div>
           </button>
-          <button className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
             <User className="h-5 w-5" />
             <span className="hidden sm:block">Sign In</span>
           </button>
-          <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-            Sell Components
+          <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            <span className="relative font-medium">Sell Components</span>
           </button>
         </div>
       </div>
@@ -349,35 +365,55 @@ interface SearchHeroProps {
 
 function SearchHero({ searchQuery, onSearchChange, popularTags, onTagClick }: SearchHeroProps) {
   return (
-    <section className="py-12 bg-muted/30">
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Discover Premium shadcn Components
+    <section className="relative py-16 bg-gradient-to-br from-muted/40 via-muted/20 to-background overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent"></div>
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+      
+      <div className="relative mx-auto max-w-4xl px-6">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text">
+            Discover Premium
+            <br />
+            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
+              shadcn Components
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Browse, purchase, and install high-quality UI components with a single command
+          <p className="text-xl text-muted-foreground/90 leading-relaxed max-w-2xl mx-auto">
+            Browse, purchase, and install high-quality UI components with a single command.
+            Transform your projects with professional-grade components.
           </p>
         </div>
-        <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search components, templates, or creators..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-          />
+        
+        <div className="relative mb-8 group">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="relative bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-1 shadow-2xl">
+            <div className="relative">
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground/70" />
+              <input
+                type="text"
+                placeholder="Search components, templates, or creators..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="w-full pl-14 pr-6 py-4 bg-transparent border-0 rounded-2xl focus:outline-none text-lg placeholder:text-muted-foreground/60"
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2 justify-center">
-          <span className="text-sm text-muted-foreground">Popular:</span>
+        
+        <div className="flex flex-wrap gap-3 justify-center">
+          <span className="text-sm text-muted-foreground/80 flex items-center">
+            <Zap className="h-4 w-4 mr-1" />
+            Popular:
+          </span>
           {popularTags.map((tag) => (
             <button 
               key={tag}
               onClick={() => onTagClick(tag)}
-              className="text-sm px-3 py-1 bg-muted hover:bg-muted/80 rounded-full transition-colors"
+              className="relative text-sm px-4 py-2 bg-muted/60 hover:bg-muted/80 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg border border-border/30 group overflow-hidden"
             >
-              {tag}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span className="relative">{tag}</span>
             </button>
           ))}
         </div>
@@ -396,44 +432,52 @@ interface CategoryNavProps {
 
 function CategoryNav({ categories, selectedCategory, onCategoryClick, viewMode, onViewModeChange }: CategoryNavProps) {
   return (
-    <section className="border-b border-border">
+    <section className="sticky top-16 z-40 border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex items-center justify-between py-4">
-          <div className="flex items-center space-x-6 overflow-x-auto">
+          <div className="flex items-center space-x-4 overflow-x-auto scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category.name}
                 onClick={() => onCategoryClick(category.name)}
-                className={`flex items-center space-x-2 whitespace-nowrap py-2 px-3 rounded-lg transition-colors ${
+                className={`relative flex items-center space-x-2 whitespace-nowrap py-2 px-3 rounded-lg transition-all duration-300 group overflow-hidden ${
                   category.name === selectedCategory
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25 scale-105'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:scale-105'
                 }`}
               >
-                <span>{category.name}</span>
-                <span className="text-xs bg-background/20 px-1.5 py-0.5 rounded-full">
+                {category.name === selectedCategory && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80"></div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <span className="relative font-medium">{category.name}</span>
+                <span className={`relative text-xs px-2 py-1 rounded-full font-medium ${
+                  category.name === selectedCategory 
+                    ? 'bg-primary-foreground/20 text-primary-foreground' 
+                    : 'bg-muted/80 text-muted-foreground'
+                }`}>
                   {category.count}
                 </span>
               </button>
             ))}
           </div>
-          <div className="flex items-center space-x-2">
-            <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <div className="flex items-center space-x-3">
+            <button className="p-2.5 hover:bg-muted/60 rounded-xl transition-all duration-300 hover:scale-110">
               <Filter className="h-4 w-4" />
             </button>
-            <div className="border-l border-border pl-2 flex space-x-1">
+            <div className="border-l border-border/50 pl-3 flex space-x-1">
               <button 
                 onClick={() => onViewModeChange('grid')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'grid' ? 'bg-muted' : 'hover:bg-muted'
+                className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
+                  viewMode === 'grid' ? 'bg-muted text-foreground' : 'hover:bg-muted/60'
                 }`}
               >
                 <Grid className="h-4 w-4" />
               </button>
               <button 
                 onClick={() => onViewModeChange('list')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'list' ? 'bg-muted' : 'hover:bg-muted'
+                className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
+                  viewMode === 'list' ? 'bg-muted text-foreground' : 'hover:bg-muted/60'
                 }`}
               >
                 <List className="h-4 w-4" />
@@ -454,48 +498,48 @@ interface ComponentGridProps {
 }
 
 function ComponentGrid({ components, sortBy, onSortChange, viewMode }: ComponentGridProps) {
-  const getSortLabel = (sort: SortOption) => {
-    switch (sort) {
-      case 'popularity': return 'Sort by Popularity'
-      case 'price-low': return 'Sort by Price (Low to High)'
-      case 'price-high': return 'Sort by Price (High to Low)'
-      case 'rating': return 'Sort by Rating'
-      case 'recent': return 'Sort by Recent'
-    }
-  }
-
   return (
-    <section className="py-8">
+    <section className="py-12">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold">{components.length} Components</h2>
-            <p className="text-sm text-muted-foreground">Showing filtered results</p>
+            <h2 className="text-2xl font-bold">{components.length} Components</h2>
+            <p className="text-sm text-muted-foreground mt-1">Discover the perfect components for your project</p>
           </div>
-          <select 
-            value={sortBy}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className="px-3 py-2 bg-background border border-border rounded-lg text-sm"
-          >
-            <option value="popularity">Sort by Popularity</option>
-            <option value="price-low">Sort by Price (Low to High)</option>
-            <option value="price-high">Sort by Price (High to Low)</option>
-            <option value="rating">Sort by Rating</option>
-            <option value="recent">Sort by Recent</option>
-          </select>
+          <div className="relative">
+            <select 
+              value={sortBy}
+              onChange={(e) => onSortChange(e.target.value as SortOption)}
+              className="appearance-none px-4 py-3 bg-background border border-border/50 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:shadow-md cursor-pointer"
+            >
+              <option value="popularity">Sort by Popularity</option>
+              <option value="price-low">Sort by Price (Low to High)</option>
+              <option value="price-high">Sort by Price (High to Low)</option>
+              <option value="rating">Sort by Rating</option>
+              <option value="recent">Sort by Recent</option>
+            </select>
+          </div>
         </div>
         {components.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No components found matching your criteria</p>
-            <p className="text-muted-foreground text-sm mt-2">Try adjusting your search or filters</p>
+          <div className="text-center py-20">
+            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted/50 flex items-center justify-center">
+              <Search className="h-10 w-10 text-muted-foreground/50" />
+            </div>
+            <p className="text-muted-foreground text-xl font-medium mb-2">No components found</p>
+            <p className="text-muted-foreground text-sm">Try adjusting your search or filters</p>
           </div>
         ) : (
           <div className={viewMode === 'grid' 
-            ? "grid md:grid-cols-2 lg:grid-cols-3 gap-6" 
-            : "space-y-4"
+            ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" 
+            : "space-y-6"
           }>
-            {components.map((component) => (
-              <ComponentCard key={component.id} component={component} viewMode={viewMode} />
+            {components.map((component, index) => (
+              <ComponentCard 
+                key={component.id} 
+                component={component} 
+                viewMode={viewMode}
+                index={index}
+              />
             ))}
           </div>
         )}
@@ -507,47 +551,64 @@ function ComponentGrid({ components, sortBy, onSortChange, viewMode }: Component
 interface ComponentCardProps {
   component: Component
   viewMode: 'grid' | 'list'
+  index: number
 }
 
-function ComponentCard({ component, viewMode }: ComponentCardProps) {
+function ComponentCard({ component, viewMode, index }: ComponentCardProps) {
   if (viewMode === 'list') {
     return (
-      <div className="group bg-card border border-border rounded-xl p-4 hover:shadow-lg transition-all duration-200 flex items-center space-x-4">
-        <div className="w-24 h-16 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
-          <div className="text-2xl text-muted-foreground/20">🎨</div>
+      <div 
+        className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/20 flex items-center space-x-6"
+        style={{ animationDelay: `${index * 100}ms` }}
+      >
+        <div className="relative w-24 h-20 bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden group-hover:scale-105 transition-transform duration-500">
+          <div className="text-3xl opacity-40">🎨</div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-1">
+          <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className="font-semibold text-lg leading-tight">{component.name}</h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-bold text-xl leading-tight group-hover:text-primary transition-colors duration-300">{component.name}</h3>
+                {component.featured && (
+                  <Crown className="h-4 w-4 text-amber-500" />
+                )}
+                {component.trending && (
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                )}
+                {component.new && (
+                  <Zap className="h-4 w-4 text-blue-500" />
+                )}
+              </div>
               <p className="text-sm text-muted-foreground">by {component.creator}</p>
             </div>
-            <div className="text-right ml-4">
-              <div className="text-lg font-bold">${component.price}</div>
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                <span>{component.rating}</span>
+            <div className="text-right ml-6">
+              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">${component.price}</div>
+              <div className="flex items-center space-x-1 text-sm">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                <span className="font-medium">{component.rating}</span>
               </div>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
+          <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-1">
             {component.description}
           </p>
           <div className="flex items-center justify-between">
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2">
               {component.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="text-xs px-2 py-1 bg-muted rounded-full">
+                <span key={tag} className="text-xs px-3 py-1.5 bg-muted/60 rounded-full font-medium border border-border/30">
                   {tag}
                 </span>
               ))}
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Download className="h-4 w-4" />
-                <span>{component.downloads.toLocaleString()}</span>
+                <span className="font-medium">{component.downloads.toLocaleString()}</span>
               </div>
-              <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors text-sm">
-                Purchase
+              <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group font-medium">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <span className="relative">Purchase</span>
               </button>
             </div>
           </div>
@@ -557,49 +618,71 @@ function ComponentCard({ component, viewMode }: ComponentCardProps) {
   }
 
   return (
-    <div className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
-      <div className="relative aspect-[3/2] bg-muted flex items-center justify-center">
-        <div className="text-6xl text-muted-foreground/20">🎨</div>
-        <button className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <Eye className="h-6 w-6 text-white" />
-        </button>
-        {component.featured && (
-          <div className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-            Featured
+    <div 
+      className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/20"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <div className="relative aspect-[3/2] bg-gradient-to-br from-muted/60 to-muted/30 flex items-center justify-center overflow-hidden">
+        <div className="text-6xl opacity-30">🎨</div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <button className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+            <Eye className="h-6 w-6 text-white" />
           </div>
-        )}
+        </button>
+        <div className="absolute top-4 left-4 flex gap-2">
+          {component.featured && (
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-3 py-1.5 rounded-full font-bold flex items-center gap-1 shadow-lg">
+              <Crown className="h-3 w-3" />
+              Featured
+            </div>
+          )}
+          {component.trending && (
+            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-3 py-1.5 rounded-full font-bold flex items-center gap-1 shadow-lg">
+              <TrendingUp className="h-3 w-3" />
+              Trending
+            </div>
+          )}
+          {component.new && (
+            <div className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs px-3 py-1.5 rounded-full font-bold flex items-center gap-1 shadow-lg">
+              <Zap className="h-3 w-3" />
+              New
+            </div>
+          )}
+        </div>
       </div>
-      <div className="p-4">
-        <div className="flex items-start justify-between mb-2">
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-3">
           <div>
-            <h3 className="font-semibold text-lg leading-tight">{component.name}</h3>
+            <h3 className="font-bold text-xl leading-tight group-hover:text-primary transition-colors duration-300">{component.name}</h3>
             <p className="text-sm text-muted-foreground">by {component.creator}</p>
           </div>
           <div className="text-right">
-            <div className="text-lg font-bold">${component.price}</div>
-            <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              <span>{component.rating}</span>
+            <div className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">${component.price}</div>
+            <div className="flex items-center space-x-1 text-sm">
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+              <span className="font-medium">{component.rating}</span>
             </div>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+        <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-2 leading-relaxed">
           {component.description}
         </p>
-        <div className="flex flex-wrap gap-1 mb-4">
+        <div className="flex flex-wrap gap-2 mb-6">
           {component.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-1 bg-muted rounded-full">
+            <span key={tag} className="text-xs px-3 py-1.5 bg-muted/60 rounded-full font-medium border border-border/30 hover:bg-muted transition-colors duration-200">
               {tag}
             </span>
           ))}
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Download className="h-4 w-4" />
-            <span>{component.downloads.toLocaleString()}</span>
+            <span className="font-medium">{component.downloads.toLocaleString()}</span>
           </div>
-          <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors text-sm">
-            Purchase
+          <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group font-medium">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            <span className="relative">Purchase</span>
           </button>
         </div>
       </div>

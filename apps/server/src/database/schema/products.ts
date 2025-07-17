@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
-export const products = pgTable("products", {
+export const productsTable = pgTable("products", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
@@ -23,5 +23,5 @@ export const products = pgTable("products", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export type InsertProduct = typeof products.$inferInsert;
-export type SelectProduct = typeof products.$inferSelect;
+export type InsertProduct = typeof productsTable.$inferInsert;
+export type SelectProduct = typeof productsTable.$inferSelect;

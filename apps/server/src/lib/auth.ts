@@ -26,18 +26,38 @@ export const auth = betterAuth({
   }),
 
   plugins: [
-    apiKey(),
+    apiKey({
+      defaultPrefix: "shopcn_",
+      keyExpiration: {
+        defaultExpiresIn: 300000,
+        disableCustomExpiresTime: true,
+        maxExpiresIn: 1,
+      },
+      disableSessionForAPIKeys: true,
+    }),
+
     stripe({
       createCustomerOnSignUp: true,
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
       async onEvent(event) {
         if (event.type === "checkout.session.completed") {
-          // const checkoutSession = event.data.object;
-          // await db
-          //   .update(inventory)
-          //   .set({ paymentCompleted: true })
-          //   .where(eq(inventory.checkoutId, checkoutSession.id));
+          const { id } = event.data.object;
+
+          const checkoutSession =
+            await stripeClient.checkout.sessions.retrieve(id);
+
+          if (checkoutSession.status !== "complete") {
+            await db
+              .update(inventory)
+              .set({ paymentCompleted: false })
+              .where(eq(inventory.checkoutId, id));
+          } else {
+            await db
+              .update(inventory)
+              .set({ paymentCompleted: true })
+              .where(eq(inventory.checkoutId, id));
+          }
         }
       },
     }),

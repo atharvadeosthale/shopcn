@@ -4,7 +4,7 @@ import { db } from "../../database/connection";
 import { inventory } from "../../database/schema/inventory";
 import { products } from "../../database/schema/products";
 import { eq } from "drizzle-orm";
-import { router, protectedProcedure } from "../index";
+import { router, protectedProcedure } from "../trpc";
 
 export const paymentsRouter = router({
   createCheckout: protectedProcedure

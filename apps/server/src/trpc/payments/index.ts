@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { stripe } from "../../lib/stripe";
 import { db } from "../../database/connection";
-import { inventory } from "../../database/schema/inventory";
-import { products } from "../../database/schema/products";
+import { inventoryTable } from "../../database/schema/inventory";
+import { productsTable } from "../../database/schema/products";
 import { eq } from "drizzle-orm";
 import { router, protectedProcedure } from "../trpc";
 
@@ -11,7 +11,6 @@ export const paymentsRouter = router({
     .input(
       z.object({
         productId: z.string(),
-        quantity: z.number().min(1),
         successUrl: z.string(),
         cancelUrl: z.string(),
       })
@@ -19,8 +18,8 @@ export const paymentsRouter = router({
     .mutation(async ({ input, ctx }) => {
       const product = await db
         .select()
-        .from(products)
-        .where(eq(products.id, parseInt(input.productId)))
+        .from(productsTable)
+        .where(eq(productsTable.id, parseInt(input.productId)))
         .limit(1);
 
       if (!product.length) {
@@ -51,21 +50,20 @@ export const paymentsRouter = router({
         cancel_url: input.cancelUrl,
         metadata: {
           productId: input.productId,
-          quantity: input.quantity.toString(),
+          quantity: 1,
         },
       });
 
       const inventoryRecord = await db
-        .insert(inventory)
+        .insert(inventoryTable)
         .values({
           itemType: "product",
-          productId: input.productId,
-          quantity: input.quantity,
+          productId: parseInt(input.productId),
           ownedBy: ctx.user.id,
           checkoutId: session.id,
           paymentCompleted: false,
         })
-        .returning({ id: inventory.id });
+        .returning({ id: inventoryTable.id });
 
       return {
         checkoutUrl: session.url,
@@ -79,8 +77,8 @@ export const paymentsRouter = router({
     .query(async ({ input }) => {
       const inventoryRecord = await db
         .select()
-        .from(inventory)
-        .where(eq(inventory.checkoutId, input.checkoutId))
+        .from(inventoryTable)
+        .where(eq(inventoryTable.checkoutId, input.checkoutId))
         .limit(1);
 
       if (!inventoryRecord.length) {

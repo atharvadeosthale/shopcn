@@ -5,7 +5,7 @@ import {
   createRootRoute,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
+import { TRPCProvider } from '../providers/TRPCProvider'
 
 import appCss from '../styles.css?url'
 
@@ -33,8 +33,10 @@ export const Route = createRootRoute({
 
   component: () => (
     <RootDocument>
-      <Outlet />
-      <TanStackRouterDevtools />
+      <TRPCProvider>
+        <Outlet />
+        <TanStackRouterDevtools />
+      </TRPCProvider>
     </RootDocument>
   ),
 })

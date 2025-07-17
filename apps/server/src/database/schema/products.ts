@@ -3,19 +3,17 @@ import {
   integer,
   jsonb,
   pgTable,
-  serial,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
 export const productsTable = pgTable("products", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: integer("price").notNull(),
-  registryJson: jsonb("registry_json").notNull(),
   isPublished: boolean("is_published").notNull().default(false),
   createdBy: text("created_by")
     .notNull()

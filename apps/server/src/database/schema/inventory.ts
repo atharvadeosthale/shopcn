@@ -2,7 +2,6 @@ import {
   boolean,
   integer,
   pgTable,
-  serial,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -10,11 +9,11 @@ import { user } from "./auth-schema";
 import { productsTable } from "./products";
 
 export const inventoryTable = pgTable("inventory", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   itemType: text("item_type").notNull(),
-  productId: text("product_id").references(() => productsTable.id),
+  productId: integer("product_id").references(() => productsTable.id),
   collectionId: text("collection_id"),
-  quantity: integer("quantity").notNull(),
+  // quantity: integer("quantity").notNull(),
   ownedBy: text("owned_by")
     .notNull()
     .references(() => user.id),

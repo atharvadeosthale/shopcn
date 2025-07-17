@@ -14,11 +14,11 @@ const app = new Hono<{
 }>();
 
 app.use(
-  "/api/auth/*",
+  "*",
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
     allowHeaders: ["Content-Type", "Authorization"],
-    allowMethods: ["POST", "GET", "OPTIONS"],
+    allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );

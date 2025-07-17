@@ -7,7 +7,7 @@ import {
   user,
   verification,
 } from "../database/schema/auth-schema";
-import { inventory } from "../database/schema/inventory";
+import { inventoryTable } from "../database/schema/inventory";
 import { apiKey } from "better-auth/plugins";
 import { stripe } from "@better-auth/stripe";
 import { stripe as stripeClient } from "../lib/stripe";
@@ -49,14 +49,14 @@ export const auth = betterAuth({
 
           if (checkoutSession.status !== "complete") {
             await db
-              .update(inventory)
+              .update(inventoryTable)
               .set({ paymentCompleted: false })
-              .where(eq(inventory.checkoutId, id));
+              .where(eq(inventoryTable.checkoutId, id));
           } else {
             await db
-              .update(inventory)
+              .update(inventoryTable)
               .set({ paymentCompleted: true })
-              .where(eq(inventory.checkoutId, id));
+              .where(eq(inventoryTable.checkoutId, id));
           }
         }
       },

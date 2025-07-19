@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
-import { Key, Copy, Clock, RefreshCw } from "lucide-react";
+import { Key, Copy, Clock, RefreshCw, AlertTriangle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export const Route = createFileRoute("/dashboard")({
@@ -13,22 +13,41 @@ function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [apiKey, setApiKey] = useState<string>("");
+  const [apiKeyId, setApiKeyId] = useState<string>("");
   const [keyExpiry, setKeyExpiry] = useState<Date | null>(null);
   const [copied, setCopied] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
+  const [keyInvalid, setKeyInvalid] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const generateKeyMutation = trpc.users.generateApiKey.useMutation({
     onSuccess: (data) => {
-      setApiKey(data.id);
+      setApiKey(data.key);
+      setApiKeyId(data.id);
       const expiryTime = new Date(Date.now() + 5 * 60 * 1000);
       setKeyExpiry(expiryTime);
+      setKeyInvalid(false);
       startTimer(expiryTime);
     },
     onError: (error) => {
       console.error("Error generating API key:", error);
     },
   });
+
+  const { data: isKeyValid } = trpc.users.checkApiKey.useQuery(
+    { apiKeyId },
+    {
+      enabled: !!apiKey && !keyInvalid,
+      refetchInterval: 5000,
+      refetchIntervalInBackground: true,
+    }
+  );
+
+  useEffect(() => {
+    if (isKeyValid === false && apiKey) {
+      setKeyInvalid(true);
+    }
+  }, [isKeyValid, apiKey]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -58,11 +77,11 @@ function Dashboard() {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    
+
     const updateTimer = () => {
       const now = new Date();
       const remaining = expiryTime.getTime() - now.getTime();
-      
+
       if (remaining <= 0) {
         setTimeRemaining("Expired");
         setApiKey("");
@@ -72,12 +91,12 @@ function Dashboard() {
         }
         return;
       }
-      
+
       const minutes = Math.floor(remaining / 60000);
       const seconds = Math.floor((remaining % 60000) / 1000);
       setTimeRemaining(`${minutes}:${seconds.toString().padStart(2, "0")}`);
     };
-    
+
     updateTimer();
     timerRef.current = setInterval(updateTimer, 1000);
   };
@@ -93,7 +112,6 @@ function Dashboard() {
       setTimeout(() => setCopied(false), 2000);
     }
   };
-
 
   if (isLoading) {
     return (
@@ -153,7 +171,9 @@ function Dashboard() {
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold">API Access</h2>
-                      <p className="text-muted-foreground">Generate temporary authentication keys</p>
+                      <p className="text-muted-foreground">
+                        Generate temporary authentication keys
+                      </p>
                     </div>
                   </div>
                   <button
@@ -169,7 +189,9 @@ function Dashboard() {
                         <Key className="h-5 w-5" />
                       )}
                       <span>
-                        {generateKeyMutation.isPending ? "Generating..." : "Generate Key"}
+                        {generateKeyMutation.isPending
+                          ? "Generating..."
+                          : "Generate Key"}
                       </span>
                     </div>
                   </button>
@@ -177,52 +199,97 @@ function Dashboard() {
 
                 {apiKey ? (
                   <div className="space-y-6">
-                    <div className="bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/30 rounded-2xl p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="h-10 w-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-                            <Key className="h-5 w-5 text-green-500" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-green-700 dark:text-green-300">Active Key</h3>
-                            <p className="text-sm text-green-600 dark:text-green-400">Valid for 5 minutes</p>
+                    {keyInvalid ? (
+                      <div className="bg-gradient-to-r from-red-50/50 to-rose-50/50 dark:from-red-950/20 dark:to-rose-950/20 border border-red-200/50 dark:border-red-800/30 rounded-2xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="h-10 w-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+                              <AlertTriangle className="h-5 w-5 text-red-500" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-red-700 dark:text-red-300">
+                                API Key Used
+                              </h3>
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                This key has been consumed and is no longer
+                                valid
+                              </p>
+                            </div>
                           </div>
                         </div>
-                        {keyExpiry && timeRemaining && (
-                          <div className="flex items-center space-x-2 bg-white/60 dark:bg-black/20 rounded-xl px-3 py-2">
-                            <Clock className="h-4 w-4 text-green-600" />
-                            <span className="text-sm font-mono text-green-700 dark:text-green-300">{timeRemaining}</span>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-1 bg-white/70 dark:bg-black/30 border border-red-200/50 dark:border-red-800/30 rounded-xl p-4">
+                            <code className="font-mono text-sm text-red-800 dark:text-red-200 break-all select-all opacity-50">
+                              {apiKey}
+                            </code>
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-center space-x-2 text-red-600 dark:text-red-400">
+                          <div className="h-1.5 w-1.5 bg-red-500 rounded-full"></div>
+                          <span className="text-sm font-medium">
+                            Generate a new API key to continue
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/30 rounded-2xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="h-10 w-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                              <Key className="h-5 w-5 text-green-500" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-green-700 dark:text-green-300">
+                                Active Key
+                              </h3>
+                              <p className="text-sm text-green-600 dark:text-green-400">
+                                Valid for 5 minutes
+                              </p>
+                            </div>
+                          </div>
+                          {keyExpiry && timeRemaining && (
+                            <div className="flex items-center space-x-2 bg-white/60 dark:bg-black/20 rounded-xl px-3 py-2">
+                              <Clock className="h-4 w-4 text-green-600" />
+                              <span className="text-sm font-mono text-green-700 dark:text-green-300">
+                                {timeRemaining}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-1 bg-white/70 dark:bg-black/30 border border-green-200/50 dark:border-green-800/30 rounded-xl p-4">
+                            <code className="font-mono text-sm text-green-800 dark:text-green-200 break-all select-all">
+                              {apiKey}
+                            </code>
+                          </div>
+                          <button
+                            onClick={handleCopyKey}
+                            className="h-12 w-12 bg-green-500/20 hover:bg-green-500/30 rounded-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
+                          >
+                            <Copy
+                              className={`h-5 w-5 transition-colors ${copied ? "text-green-600" : "text-green-500"}`}
+                            />
+                          </button>
+                        </div>
+                        {copied && (
+                          <div className="mt-3 flex items-center space-x-2 text-green-600 dark:text-green-400">
+                            <div className="h-1.5 w-1.5 bg-green-500 rounded-full"></div>
+                            <span className="text-sm font-medium">
+                              Copied to clipboard!
+                            </span>
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-1 bg-white/70 dark:bg-black/30 border border-green-200/50 dark:border-green-800/30 rounded-xl p-4">
-                          <code className="font-mono text-sm text-green-800 dark:text-green-200 break-all select-all">
-                            {apiKey}
-                          </code>
-                        </div>
-                        <button
-                          onClick={handleCopyKey}
-                          className="h-12 w-12 bg-green-500/20 hover:bg-green-500/30 rounded-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
-                        >
-                          <Copy className={`h-5 w-5 transition-colors ${copied ? "text-green-600" : "text-green-500"}`} />
-                        </button>
-                      </div>
-                      {copied && (
-                        <div className="mt-3 flex items-center space-x-2 text-green-600 dark:text-green-400">
-                          <div className="h-1.5 w-1.5 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-medium">Copied to clipboard!</span>
-                        </div>
-                      )}
-                    </div>
-
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-12">
                     <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
                       <Key className="h-8 w-8 text-muted-foreground/50" />
                     </div>
-                    <p className="text-muted-foreground">Click "Generate Key" to create a temporary API key</p>
+                    <p className="text-muted-foreground">
+                      Click "Generate Key" to create a temporary API key
+                    </p>
                   </div>
                 )}
               </div>

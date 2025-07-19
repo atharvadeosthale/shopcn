@@ -11,12 +11,14 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => {
     hasSession: !!session,
     hasUser: !!session?.user,
     userId: session?.user?.id,
-    sessionId: session?.session?.id
+    sessionId: session?.session?.id,
   });
 
   return {
     session,
     user: session?.user || null,
+    headers: opts.req.headers,
+    req: opts.req,
   };
 };
 
@@ -37,6 +39,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     ctx: {
       session: ctx.session,
       user: ctx.user,
+      headers: ctx.headers,
     },
   });
 });

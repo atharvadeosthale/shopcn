@@ -16,16 +16,28 @@ const app = new Hono<{
 app.use(
   "*",
   cors({
-    origin: "*",
+    origin: (origin) => origin,
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["POST", "GET", "OPTIONS", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => {
-  return auth.handler(c.req.raw);
-});
+app.on(
+  ["POST", "GET"],
+  "/api/auth/*",
+  cors({
+    origin: "http://localhost:3001", // replace with your origin
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  }),
+  (c) => {
+    return auth.handler(c.req.raw);
+  }
+);
 
 app.use("*", async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });

@@ -7,6 +7,13 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => {
     headers: opts.req.headers,
   });
 
+  console.log("TRPC Context - Session validation:", {
+    hasSession: !!session,
+    hasUser: !!session?.user,
+    userId: session?.user?.id,
+    sessionId: session?.session?.id
+  });
+
   return {
     session,
     user: session?.user || null,

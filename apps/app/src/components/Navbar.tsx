@@ -1,11 +1,42 @@
-import { ShoppingCart, User } from 'lucide-react'
+import { ShoppingCart, User, LogOut } from 'lucide-react'
+import { authClient } from '@/lib/auth-client'
+import { useState, useEffect } from 'react'
+import { Link } from '@tanstack/react-router'
 
 export default function Navbar() {
+  const [user, setUser] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const session = await authClient.getSession()
+        if (session.data) {
+          setUser(session.data.user)
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    getUser()
+  }, [])
+
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut()
+      setUser(null)
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center space-x-8">
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <div className="relative">
               <div className="h-8 w-8 rounded-xl bg-primary shadow-lg shadow-primary/25"></div>
               <div className="absolute inset-0 h-8 w-8 rounded-xl bg-gradient-to-tr from-primary to-primary/80 opacity-90"></div>
@@ -13,7 +44,7 @@ export default function Navbar() {
             <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
               shopcn
             </span>
-          </div>
+          </Link>
           <nav className="hidden md:flex items-center space-x-6">
             <a href="#" className="relative text-foreground font-medium group">
               Components
@@ -46,10 +77,28 @@ export default function Navbar() {
               2
             </div>
           </button>
-          <button className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
-            <User className="h-5 w-5" />
-            <span className="hidden sm:block">Sign In</span>
-          </button>
+          {!isLoading && (
+            user ? (
+              <div className="flex items-center space-x-4">
+                <Link to="/dashboard" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
+                  <User className="h-5 w-5" />
+                  <span className="hidden sm:block">{user.name}</span>
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="hidden sm:block">Sign Out</span>
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
+                <User className="h-5 w-5" />
+                <span className="hidden sm:block">Sign In</span>
+              </Link>
+            )
+          )}
           <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             <span className="relative font-medium">Sell Components</span>

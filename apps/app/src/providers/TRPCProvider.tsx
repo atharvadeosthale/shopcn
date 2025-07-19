@@ -26,6 +26,12 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
         }),
         httpBatchLink({
           url: "http://localhost:8080/trpc",
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: 'include',
+            });
+          },
           headers() {
             return {
               "content-type": "application/json",

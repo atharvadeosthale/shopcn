@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../database/connection";
 import {
   account,
+  apikey,
   session,
   user,
   verification,
@@ -15,6 +16,8 @@ import { eq } from "drizzle-orm";
 import { env } from "./env";
 
 export const auth = betterAuth({
+  secret: env.BETTER_AUTH_SECRET,
+
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -22,6 +25,7 @@ export const auth = betterAuth({
       session: session,
       verification: verification,
       account: account,
+      apikey: apikey,
     },
   }),
 
@@ -66,4 +70,16 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+
+  socialProviders: {
+    google: {
+      enabled: true,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+
+  advanced: {},
+
+  trustedOrigins: ["http://localhost:3001"],
 });

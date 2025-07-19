@@ -20,6 +20,7 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
 });
 
 export const session = pgTable("session", {
@@ -59,9 +60,35 @@ export const verification = pgTable("verification", {
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
+    () => /* @__PURE__ */ new Date(),
   ),
   updatedAt: timestamp("updated_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
+    () => /* @__PURE__ */ new Date(),
   ),
+});
+
+export const apikey = pgTable("apikey", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+  start: text("start"),
+  prefix: text("prefix"),
+  key: text("key").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  refillInterval: integer("refill_interval"),
+  refillAmount: integer("refill_amount"),
+  lastRefillAt: timestamp("last_refill_at"),
+  enabled: boolean("enabled").default(true),
+  rateLimitEnabled: boolean("rate_limit_enabled").default(true),
+  rateLimitTimeWindow: integer("rate_limit_time_window").default(86400000),
+  rateLimitMax: integer("rate_limit_max").default(10),
+  requestCount: integer("request_count"),
+  remaining: integer("remaining"),
+  lastRequest: timestamp("last_request"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  permissions: text("permissions"),
+  metadata: text("metadata"),
 });

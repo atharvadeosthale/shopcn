@@ -3,8 +3,9 @@ import { stripe } from "../../lib/stripe";
 import { db } from "../../database/connection";
 import { inventoryTable } from "../../database/schema/inventory";
 import { productsTable } from "../../database/schema/products";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { router, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 export const paymentsRouter = router({
   createCheckout: protectedProcedure
@@ -28,6 +29,26 @@ export const paymentsRouter = router({
 
       const productData = product[0];
 
+      // Check if the user has already purchased this product
+      const existingInventoryRecord = await db
+        .select()
+        .from(inventoryTable)
+        .where(
+          and(
+            eq(inventoryTable.productId, parseInt(input.productId)),
+            eq(inventoryTable.ownedBy, ctx.user.id),
+            eq(inventoryTable.paymentCompleted, true)
+          )
+        )
+        .limit(1);
+
+      if (existingInventoryRecord.length > 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You have already purchased this product.",
+        });
+      }
+
       // TODO: temporary solution, most robust would be to
       // assign every product a stripe product and do it that way
       const session = await stripe.checkout.sessions.create({
@@ -46,6 +67,7 @@ export const paymentsRouter = router({
             quantity: 1,
           },
         ],
+        customer_email: ctx.user.email,
         success_url: input.successUrl,
         cancel_url: input.cancelUrl,
         metadata: {

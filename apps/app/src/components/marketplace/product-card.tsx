@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { Eye, Zap } from "lucide-react";
+import { Eye } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProductCardProps {
@@ -18,10 +18,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, viewMode, index }: ProductCardProps) {
-  const isNew =
-    new Date().getTime() - new Date(product.createdAt).getTime() <
-    7 * 24 * 60 * 60 * 1000;
-
   const { mutate: createCheckout, isPending: isCreatingCheckout } =
     trpc.payments.createCheckout.useMutation({
       onSuccess: (data) => {
@@ -34,56 +30,62 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
       },
     });
 
-  async function handlePurchase() {
-    await createCheckout({
+  function handlePurchase() {
+    createCheckout({
       productId: product.id.toString(),
-      successUrl: `${window.location.origin}/success`,
-      cancelUrl: `${window.location.origin}/cancel`,
+      successUrl: `${window.location.origin}`,
+      cancelUrl: `${window.location.origin}`,
     });
   }
 
   if (viewMode === "list") {
     return (
       <div
-        className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/20 flex items-center space-x-6"
+        className="group relative bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-6 hover:shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 flex items-center space-x-6 overflow-hidden"
         style={{ animationDelay: `${index * 100}ms` }}
       >
-        <div className="relative w-24 h-20 bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden group-hover:scale-105 transition-transform duration-500">
-          <div className="text-3xl opacity-40">🎨</div>
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+        <div className="relative w-24 h-20 bg-gradient-to-br from-muted/60 to-muted/30 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden group-hover:scale-105 transition-all duration-500 shadow-lg">
+          <div className="text-3xl opacity-50">🎨</div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
         </div>
-        <div className="flex-1 min-w-0">
+
+        <div className="relative flex-1 min-w-0">
           <div className="flex items-start justify-between mb-3">
-            <div>
+            <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-xl leading-tight group-hover:text-primary transition-colors duration-300">
+                <h3 className="font-bold text-xl leading-tight text-foreground group-hover:text-primary transition-colors duration-300">
                   {product.name}
                 </h3>
-                {isNew && <Zap className="h-4 w-4 text-blue-500" />}
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground/90 font-medium">
                 by {product.createdBy}
               </p>
             </div>
             <div className="text-right ml-6">
-              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <div className="text-2xl font-bold text-foreground">
                 ${(product.price / 100).toFixed(2)}
               </div>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-1">
+
+          <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-1 leading-relaxed">
             {product.description}
           </p>
+
           <div className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground/70 font-medium">
               Added {new Date(product.createdAt).toLocaleDateString()}
             </div>
             <button
-              className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-md hover:shadow-primary/20 group/btn font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handlePurchase}
               disabled={isCreatingCheckout}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
               <span className="relative">Purchase</span>
             </button>
           </div>
@@ -94,55 +96,56 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
 
   return (
     <div
-      className="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/20"
+      className="group relative bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30"
       style={{ animationDelay: `${index * 100}ms` }}
     >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
       <div className="relative aspect-[3/2] bg-gradient-to-br from-muted/60 to-muted/30 flex items-center justify-center overflow-hidden">
         <div className="text-6xl opacity-30">🎨</div>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+
         <button className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-xl">
             <Eye className="h-6 w-6 text-white" />
           </div>
         </button>
-        {isNew && (
-          <div className="absolute top-4 left-4">
-            <div className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs px-3 py-1.5 rounded-full font-bold flex items-center gap-1 shadow-lg">
-              <Zap className="h-3 w-3" />
-              New
-            </div>
-          </div>
-        )}
       </div>
-      <div className="p-6">
+
+      <div className="relative p-6">
         <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="font-bold text-xl leading-tight group-hover:text-primary transition-colors duration-300">
+          <div className="flex-1">
+            <h3 className="font-bold text-xl leading-tight text-foreground group-hover:text-primary transition-colors duration-300 mb-1">
               {product.name}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground/90 font-medium">
               by {product.createdBy}
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <div className="text-right ml-4">
+            <div className="text-2xl font-bold text-foreground">
               ${(product.price / 100).toFixed(2)}
             </div>
           </div>
         </div>
+
         <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-2 leading-relaxed">
           {product.description}
         </p>
+
         <div className="flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-muted-foreground/70 font-medium">
             Added {new Date(product.createdAt).toLocaleDateString()}
           </div>
           <button
-            className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-md hover:shadow-primary/20 group/btn font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handlePurchase}
             disabled={isCreatingCheckout}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
             <span className="relative">Purchase</span>
           </button>
         </div>

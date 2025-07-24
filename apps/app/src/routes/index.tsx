@@ -12,8 +12,21 @@ import {
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
+import { getQueryClient, getTRPCClient } from "../providers/TRPCProvider";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const queryClient = getQueryClient();
+    const trpcClient = getTRPCClient();
+
+    void queryClient.prefetchQuery({
+      queryKey: [["products", "getProducts"], { type: "query" }],
+      queryFn: () => trpcClient.products.getProducts.query(),
+      staleTime: 1000 * 60 * 5,
+    });
+
+    return {};
+  },
   component: Marketplace,
 });
 

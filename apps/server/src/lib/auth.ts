@@ -37,7 +37,7 @@ export const auth = betterAuth({
         disableCustomExpiresTime: true,
         maxExpiresIn: 1,
       },
-      disableSessionForAPIKeys: true,
+      // disableSessionForAPIKeys: true,
     }),
 
     stripe({

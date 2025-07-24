@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter, createContext } from "./trpc";
 import { auth } from "./lib/auth";
+import { install } from "./routes/install";
 import "dotenv/config";
 
 const app = new Hono<{
@@ -59,6 +60,8 @@ app.use(
     createContext,
   })
 );
+
+app.route("/install", install);
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");

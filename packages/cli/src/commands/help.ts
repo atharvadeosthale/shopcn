@@ -24,26 +24,26 @@ export const helpCommand = new Command("help")
   .description("Show available commands and usage")
   .action(() => {
     title("📦 Shopcn CLI - Component Registry Manager");
-    
+
     console.log(chalk.dim("Manage your shadcn components with ease\n"));
-    
+
     console.log(chalk.bold("Usage:"));
     console.log("  shopcn <command> [options]\n");
-    
+
     console.log(chalk.bold("Available Commands:"));
-    
-    commands.forEach(cmd => {
+
+    commands.forEach((cmd) => {
       console.log(
         `  ${chalk.cyan(cmd.name.padEnd(10))} ${chalk.dim(cmd.description)}`
       );
     });
-    
+
     console.log();
     console.log(chalk.bold("Examples:"));
     console.log(chalk.dim("  # Authenticate with your server"));
     console.log("  $ shopcn login\n");
     console.log(chalk.dim("  # Add a component registry"));
     console.log("  $ shopcn add ./registry.json\n");
-    
-    console.log(chalk.dim("For more information, visit: https://shopcn.dev"));
+
+    // console.log(chalk.dim("For more information, visit: https://shopcn.dev"));
   });

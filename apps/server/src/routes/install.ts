@@ -17,6 +17,10 @@ install.get("/:slug", async (c) => {
     return c.json({ error: "Key is required" }, 400);
   }
 
+  if (!key.startsWith("shopcn_")) {
+    return c.json({ error: "Invalid key" }, 401);
+  }
+
   // Find the product by slug
   const product = await db
     .select()

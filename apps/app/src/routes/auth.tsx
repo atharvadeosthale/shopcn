@@ -2,11 +2,19 @@ import { authClient } from "@/lib/auth-client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Sparkles, ArrowRight } from "lucide-react";
 
+type AuthSearch = {
+  r?: string;
+};
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
+    r: typeof search.r === "string" ? search.r : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
+  const { r: redirectTo } = Route.useSearch();
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex flex-col">
       <div className="flex-1 flex items-center justify-center px-6 py-12">
@@ -34,8 +42,8 @@ function AuthPage() {
                   // TODO: plug env here later
                   authClient.signIn.social({
                     provider: "google",
-                    callbackURL: "http://localhost:3001/dashboard",
-                    errorCallbackURL: "http://localhost:3001/auth",
+                    callbackURL: redirectTo ? `http://localhost:3001${redirectTo}` : "http://localhost:3001/dashboard",
+                    errorCallbackURL: `http://localhost:3001/auth${redirectTo ? `?r=${encodeURIComponent(redirectTo)}` : ""}`,
                   })
                 }
                 className="w-full relative overflow-hidden bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 px-6 py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group flex items-center justify-center space-x-3"

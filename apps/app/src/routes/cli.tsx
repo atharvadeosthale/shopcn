@@ -1,11 +1,35 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Terminal, Key, Copy, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { createServerFn } from "@tanstack/react-start";
+import { getWebRequest } from "@tanstack/react-start/server";
+
+const checkAuth = createServerFn({ method: "GET" }).handler(async () => {
+  const request = getWebRequest();
+  const session = await authClient.getSession({
+    fetchOptions: {
+      headers: request.headers,
+    },
+  });
+
+  return { authenticated: !!session.data };
+});
 
 export const Route = createFileRoute("/cli")({
+  loader: async () => {
+    const result = await checkAuth();
+    if (!result.authenticated) {
+      throw redirect({
+        to: "/auth",
+        search: { r: "/cli" },
+      });
+    }
+    return {};
+  },
   component: RouteComponent,
 });
 
@@ -84,7 +108,7 @@ function RouteComponent() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                   <div className="flex-1 bg-muted/50 rounded-lg p-3">
                     <code className="font-mono text-sm break-all select-all">
@@ -98,7 +122,7 @@ function RouteComponent() {
                     <Copy className="h-4 w-4" />
                   </button>
                 </div>
-                
+
                 {copied && (
                   <div className="mt-3 text-sm text-green-600 dark:text-green-400">
                     ✓ Copied to clipboard

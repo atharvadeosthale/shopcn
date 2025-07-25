@@ -6,17 +6,17 @@ const commands = [
   {
     name: "login",
     description: "Authenticate with your shopcn server",
-    usage: "shopcn login",
+    usage: "npx shopcn login",
   },
   {
     name: "add",
     description: "Create a draft from your registry JSON file",
-    usage: "shopcn add <registry.json>",
+    usage: "npx shopcn add <registry.json>",
   },
   {
     name: "help",
     description: "Show this help message",
-    usage: "shopcn help",
+    usage: "npx shopcn help",
   },
 ];
 
@@ -28,7 +28,7 @@ export const helpCommand = new Command("help")
     console.log(chalk.dim("Manage your shadcn components with ease\n"));
 
     console.log(chalk.bold("Usage:"));
-    console.log("  shopcn <command> [options]\n");
+    console.log("  npx shopcn <command> [options]\n");
 
     console.log(chalk.bold("Available Commands:"));
 
@@ -41,9 +41,9 @@ export const helpCommand = new Command("help")
     console.log();
     console.log(chalk.bold("Examples:"));
     console.log(chalk.dim("  # Authenticate with your server"));
-    console.log("  $ shopcn login\n");
+    console.log("  $ npx shopcn login\n");
     console.log(chalk.dim("  # Add a component registry"));
-    console.log("  $ shopcn add ./registry.json\n");
+    console.log("  $ npx shopcn add ./registry.json\n");
 
     // console.log(chalk.dim("For more information, visit: https://shopcn.dev"));
   });

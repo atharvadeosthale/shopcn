@@ -7,13 +7,6 @@ export const createContext = async (opts: FetchCreateContextFnOptions) => {
     headers: opts.req.headers,
   });
 
-  console.log("TRPC Context - Session validation:", {
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    userId: session?.user?.id,
-    sessionId: session?.session?.id,
-  });
-
   return {
     session,
     user: session?.user || null,
@@ -53,28 +46,17 @@ export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
 
   return next({ ctx });
 });
-export const cliAdminProcedure = publicProcedure.use(async ({ ctx, next }) => {
-  const apiKey = ctx.headers.get("x-api-key");
+// export const cliAdminProcedure = publicProcedure.use(async ({ ctx, next }) => {
+//   const apiKey = ctx.headers.get("x-api-key");
 
-  if (!apiKey) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "You must be logged in to access this resource.",
-    });
-  }
+//   if (!apiKey) {
+//     throw new TRPCError({
+//       code: "UNAUTHORIZED",
+//       message: "You must be logged in to access this resource.",
+//     });
+//   }
 
-  const keyVerify = await auth.api.verifyApiKey({
-    body: {
-      key: apiKey,
-    },
-  });
+//   const
 
-  if (!keyVerify.valid) {
-    throw new TRPCError({
-      code: "FORBIDDEN",
-      message: "Invalid API key.",
-    });
-  }
-
-  return next({ ctx });
-});
+//   return next({ ctx });
+// });

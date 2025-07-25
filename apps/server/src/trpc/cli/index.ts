@@ -12,4 +12,8 @@ export const cliRouter = router({
 
     return key.key;
   }),
+
+  validateApiKey: adminProcedure.query(async ({ ctx }) => {
+    return true;
+  }),
 });

@@ -9,7 +9,7 @@ import {
   verification,
 } from "../database/schema/auth-schema";
 import { inventoryTable } from "../database/schema/inventory";
-import { apiKey } from "better-auth/plugins";
+import { admin, apiKey } from "better-auth/plugins";
 import { stripe } from "@better-auth/stripe";
 import { stripe as stripeClient } from "../lib/stripe";
 import { eq } from "drizzle-orm";
@@ -30,14 +30,14 @@ export const auth = betterAuth({
   }),
 
   plugins: [
+    admin(),
+
     apiKey({
       defaultPrefix: "shopcn_",
       keyExpiration: {
         defaultExpiresIn: 300000,
         disableCustomExpiresTime: true,
-        maxExpiresIn: 1,
       },
-      // disableSessionForAPIKeys: true,
     }),
 
     stripe({

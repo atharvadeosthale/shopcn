@@ -43,3 +43,38 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     },
   });
 });
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  if (ctx.user.role !== "admin") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "You must be an admin to access this resource.",
+    });
+  }
+
+  return next({ ctx });
+});
+export const cliAdminProcedure = publicProcedure.use(async ({ ctx, next }) => {
+  const apiKey = ctx.headers.get("x-api-key");
+
+  if (!apiKey) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You must be logged in to access this resource.",
+    });
+  }
+
+  const keyVerify = await auth.api.verifyApiKey({
+    body: {
+      key: apiKey,
+    },
+  });
+
+  if (!keyVerify.valid) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Invalid API key.",
+    });
+  }
+
+  return next({ ctx });
+});

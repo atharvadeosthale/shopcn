@@ -53,7 +53,7 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
         </div>
 
-        <div className="relative flex-1 min-w-0">
+        <div className="relative flex-1 min-w-0 flex flex-col">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
@@ -72,11 +72,11 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
             </div>
           </div>
 
-          <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-1 leading-relaxed">
+          <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-1 leading-relaxed flex-1">
             {product.description}
           </p>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto">
             <div className="text-xs text-muted-foreground/70 font-medium">
               Added {new Date(product.createdAt).toLocaleDateString()}
             </div>
@@ -96,7 +96,7 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
 
   return (
     <div
-      className="group relative bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30"
+      className="group relative bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 flex flex-col"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -115,7 +115,7 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
         </button>
       </div>
 
-      <div className="relative p-6">
+      <div className="relative p-6 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
             <h3 className="font-bold text-xl leading-tight text-foreground group-hover:text-primary transition-colors duration-300 mb-1">
@@ -132,11 +132,11 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
           </div>
         </div>
 
-        <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-muted-foreground/90 mb-4 line-clamp-2 leading-relaxed flex-1">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto">
           <div className="text-xs text-muted-foreground/70 font-medium">
             Added {new Date(product.createdAt).toLocaleDateString()}
           </div>

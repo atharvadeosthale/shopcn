@@ -62,7 +62,7 @@ export const paymentsRouter = router({
                 name: productData.name,
                 description: productData.description,
               },
-              unit_amount: productData.price,
+              unit_amount: parseFloat(productData.price) * 100,
             },
             quantity: 1,
           },

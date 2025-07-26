@@ -14,13 +14,13 @@ interface PurchasedProduct {
   id: number;
   name: string;
   description: string;
-  price: number;
+  price: string;
   createdAt: string;
   product: {
     id: number;
     name: string;
     description: string;
-    price: number;
+    price: string;
     createdAt: string;
     isPublished: boolean;
     slug: string;
@@ -133,7 +133,7 @@ export function PurchasedProductCard({
                   </div>
                   <div className="flex items-center space-x-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-full">
                     <span className="font-bold text-sm">
-                      ${(product.price / 100).toFixed(2)}
+                      ${product.price}
                     </span>
                   </div>
                 </div>

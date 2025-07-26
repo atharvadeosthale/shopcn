@@ -124,7 +124,7 @@ export function PurchasedProducts({
           </div>
         ) : (
           <div className="space-y-4">
-            {products.map((product, index) => (
+            {[...products].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((product, index) => (
               <div
                 key={product.id}
                 style={{ animationDelay: `${index * 100}ms` }}

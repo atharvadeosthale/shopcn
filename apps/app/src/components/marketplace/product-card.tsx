@@ -8,7 +8,7 @@ interface ProductCardProps {
     slug: string;
     name: string;
     description: string;
-    price: number;
+    price: string;
     isPublished: boolean;
     createdBy: string;
     createdAt: string;
@@ -67,7 +67,7 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
             </div>
             <div className="text-right ml-6">
               <div className="text-2xl font-bold text-foreground">
-                ${(product.price / 100).toFixed(2)}
+                ${product.price}
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
           </div>
           <div className="text-right ml-4">
             <div className="text-2xl font-bold text-foreground">
-              ${(product.price / 100).toFixed(2)}
+              ${product.price}
             </div>
           </div>
         </div>

@@ -58,9 +58,9 @@ function Marketplace() {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
         case "price-low":
-          return a.price - b.price;
+          return parseFloat(a.price) - parseFloat(b.price);
         case "price-high":
-          return b.price - a.price;
+          return parseFloat(b.price) - parseFloat(a.price);
         case "name":
           return a.name.localeCompare(b.name);
         default:

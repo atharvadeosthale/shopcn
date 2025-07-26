@@ -7,7 +7,7 @@ interface ProductGridProps {
     slug: string;
     name: string;
     description: string;
-    price: number;
+    price: string;
     isPublished: boolean;
     createdBy: string;
     createdAt: string;

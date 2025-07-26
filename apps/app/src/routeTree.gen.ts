@@ -16,8 +16,10 @@ import { Route as CliRouteImport } from './routes/cli'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo.start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo.start.api-request'
+import { Route as AdminDraftDraftIdRouteImport } from './routes/admin/draft/$draftId'
 import { ServerRoute as ApiDemoNamesServerRouteImport } from './routes/api.demo-names'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -47,6 +49,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
   path: '/demo/start/server-funcs',
@@ -55,6 +62,11 @@ const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
 const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
   id: '/demo/start/api-request',
   path: '/demo/start/api-request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDraftDraftIdRoute = AdminDraftDraftIdRouteImport.update({
+  id: '/admin/draft/$draftId',
+  path: '/admin/draft/$draftId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDemoNamesServerRoute = ApiDemoNamesServerRouteImport.update({
@@ -68,7 +80,9 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/cli': typeof CliRoute
   '/dashboard': typeof DashboardRoute
+  '/admin': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
 }
@@ -76,7 +90,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cli': typeof CliRoute
   '/dashboard': typeof DashboardRoute
+  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
 }
@@ -86,7 +102,9 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/cli': typeof CliRoute
   '/dashboard': typeof DashboardRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
 }
@@ -97,7 +115,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cli'
     | '/dashboard'
+    | '/admin'
     | '/auth/'
+    | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
   fileRoutesByTo: FileRoutesByTo
@@ -105,7 +125,9 @@ export interface FileRouteTypes {
     | '/'
     | '/cli'
     | '/dashboard'
+    | '/admin'
     | '/auth'
+    | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
   id:
@@ -114,7 +136,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cli'
     | '/dashboard'
+    | '/admin/'
     | '/auth/'
+    | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
   fileRoutesById: FileRoutesById
@@ -124,6 +148,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   CliRoute: typeof CliRoute
   DashboardRoute: typeof DashboardRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminDraftDraftIdRoute: typeof AdminDraftDraftIdRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
 }
@@ -186,6 +212,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -198,6 +231,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/start/api-request'
       fullPath: '/demo/start/api-request'
       preLoaderRoute: typeof DemoStartApiRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/draft/$draftId': {
+      id: '/admin/draft/$draftId'
+      path: '/admin/draft/$draftId'
+      fullPath: '/admin/draft/$draftId'
+      preLoaderRoute: typeof AdminDraftDraftIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -229,6 +269,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   CliRoute: CliRoute,
   DashboardRoute: DashboardRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminDraftDraftIdRoute: AdminDraftDraftIdRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
 }

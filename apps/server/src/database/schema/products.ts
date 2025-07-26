@@ -2,6 +2,7 @@ import {
   boolean,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
@@ -13,7 +14,7 @@ export const productsTable = pgTable("products", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  price: integer("price").notNull(),
+  price: numeric("price").notNull(),
   isPublished: boolean("is_published").notNull().default(false),
   createdBy: text("created_by")
     .notNull()

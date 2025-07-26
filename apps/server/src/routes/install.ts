@@ -4,7 +4,6 @@ import { productsTable } from "../database/schema/products";
 import { registryTable } from "../database/schema/registry";
 import { and, eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
-import { apikey } from "../database/schema/auth-schema";
 import { inventoryTable } from "../database/schema/inventory";
 
 const install = new Hono();
@@ -48,16 +47,6 @@ install.get("/:slug", async (c) => {
   if (!session?.user?.id) {
     return c.json({ error: "Invalid key" }, 401);
   }
-
-  // const keyVerify = await auth.api.verifyApiKey({
-  //   body: {
-  //     key,
-  //   },
-  // });
-
-  // if (!keyVerify.valid) {
-  //   return c.json({ error: "Invalid key" }, 401);
-  // }
 
   const purchaseCheck = await db
     .select()

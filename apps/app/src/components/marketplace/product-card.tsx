@@ -33,8 +33,8 @@ export function ProductCard({ product, viewMode, index }: ProductCardProps) {
   function handlePurchase() {
     createCheckout({
       productId: product.id.toString(),
-      successUrl: `${window.location.origin}`,
-      cancelUrl: `${window.location.origin}`,
+      successUrl: `${window.location.origin}/dashboard?success=true&productId=${product.id}`,
+      cancelUrl: `${window.location.origin}/dashboard?success=false&productId=${product.id}`,
     });
   }
 

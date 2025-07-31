@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Key, Copy, Clock, RefreshCw, AlertTriangle } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PurchasedProducts } from "@/components/dashboard/purchased-products";
+import { PaymentStatusModal } from "@/components/payment-status-modal";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -19,6 +20,9 @@ function Dashboard() {
   const [copied, setCopied] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<string>("");
   const [keyInvalid, setKeyInvalid] = useState<boolean>(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentProductId, setPaymentProductId] = useState<number | undefined>();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const generateKeyMutation = trpc.users.generateApiKey.useMutation({
@@ -64,6 +68,18 @@ function Dashboard() {
       }
     };
     getUser();
+  }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success");
+    const productId = urlParams.get("productId");
+
+    if (success !== null) {
+      setPaymentSuccess(success === "true");
+      setPaymentProductId(productId ? parseInt(productId) : undefined);
+      setShowPaymentModal(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -308,6 +324,13 @@ function Dashboard() {
           </div>
         </div>
       </main>
+
+      <PaymentStatusModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        success={paymentSuccess}
+        productId={paymentProductId}
+      />
     </div>
   );
 }

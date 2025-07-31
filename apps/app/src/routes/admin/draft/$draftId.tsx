@@ -286,10 +286,9 @@ function RouteComponent() {
                               Dependencies
                             </p>
                             <p className="text-2xl font-bold">
-                              {
-                                Object.keys(registryData.dependencies || {})
-                                  .length
-                              }
+                              {Array.isArray(registryData.dependencies) 
+                                ? registryData.dependencies.length 
+                                : Object.keys(registryData.dependencies || {}).length}
                             </p>
                           </CardContent>
                         </Card>
@@ -338,19 +337,42 @@ function RouteComponent() {
                       {registryData.dependencies &&
                         Object.keys(registryData.dependencies).length > 0 && (
                           <div className="space-y-3 border-t pt-4">
-                            <p className="text-sm font-medium">Dependencies</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {Object.entries(registryData.dependencies)
-                                .slice(0, 6)
-                                .map(([dep]) => (
-                                  <div
-                                    key={dep}
-                                    className="flex items-center gap-2 text-xs"
-                                  >
-                                    <Package className="h-3 w-3 text-muted-foreground" />
-                                    <span className="truncate">{dep}</span>
-                                  </div>
-                                ))}
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium">Dependencies</p>
+                              <span className="text-xs text-muted-foreground">
+                                {Array.isArray(registryData.dependencies) 
+                                  ? registryData.dependencies.length 
+                                  : Object.keys(registryData.dependencies).length} total
+                              </span>
+                            </div>
+                            <div className="space-y-1">
+                              {Array.isArray(registryData.dependencies) 
+                                ? registryData.dependencies.map((dep, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-center justify-between gap-2 p-2 bg-muted/30 rounded-md text-xs"
+                                    >
+                                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        <Package className="h-3 w-3 text-muted-foreground shrink-0" />
+                                        <span className="font-mono text-foreground">{dep}</span>
+                                      </div>
+                                      <span className="text-muted-foreground font-mono">latest</span>
+                                    </div>
+                                  ))
+                                : Object.entries(registryData.dependencies).map(([dep, version]) => (
+                                    <div
+                                      key={dep}
+                                      className="flex items-center justify-between gap-2 p-2 bg-muted/30 rounded-md text-xs"
+                                    >
+                                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        <Package className="h-3 w-3 text-muted-foreground shrink-0" />
+                                        <span className="font-mono text-foreground">{dep}</span>
+                                      </div>
+                                      <span className="text-muted-foreground font-mono">
+                                        {version}
+                                      </span>
+                                    </div>
+                                  ))}
                             </div>
                           </div>
                         )}

@@ -33,6 +33,41 @@ export const productsRouter = router({
     return products;
   }),
 
+  getProduct: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const product = await db
+        .select({
+          id: productsTable.id,
+          name: productsTable.name,
+          description: productsTable.description,
+          price: productsTable.price,
+          createdAt: productsTable.createdAt,
+          isPublished: productsTable.isPublished,
+          slug: productsTable.slug,
+          createdBy: user.name,
+        })
+        .from(productsTable)
+        .innerJoin(user, eq(productsTable.createdBy, user.id))
+        .where(eq(productsTable.id, id))
+        .limit(1);
+
+      if (!product[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
+
+      return product[0];
+    }),
+
   getDraft: adminProcedure
     .input(
       z.object({

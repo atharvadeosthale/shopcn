@@ -68,6 +68,7 @@ export const paymentsRouter = router({
           },
         ],
         customer_email: ctx.user.email,
+        // TODO: redirect from server to the frontend
         success_url: input.successUrl,
         cancel_url: input.cancelUrl,
         metadata: {

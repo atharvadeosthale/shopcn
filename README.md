@@ -151,8 +151,8 @@ bun build
 **Other commands:**
 ```bash
 bun lint
-bun typecheck
-bun clean
+bun check-types
+bun format
 ```
 
 </td>

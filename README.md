@@ -24,9 +24,8 @@ This monorepo contains the complete shopcn platform:
 
 ### Applications
 - **`apps/server`** — Hono + tRPC backend
-- **`apps/app`** — TanStack Start marketplace  
-- **`apps/web`** — Landing page
-- **`apps/docs`** — Documentation site
+- **`apps/app`** — TanStack Start marketplace
+- **`apps/docs`** — Documentation site and homepage
 
 </td>
 <td width="50%">
@@ -66,8 +65,7 @@ bun dev
 |---------|-----|---------|
 | 🔧 **Server** | `localhost:8080` | API & Authentication |
 | 🛍️ **App** | `localhost:3001` | Marketplace |
-| 🌐 **Web** | `localhost:3000` | Landing Page |
-| 📚 **Docs** | `localhost:3002` | Documentation |
+| 📚 **Docs** | `localhost:3000` | Documentation & Homepage |
 
 </div>
 

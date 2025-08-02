@@ -6,7 +6,7 @@ import { trpc } from "../lib/trpc";
 let globalQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return new QueryClient({
       defaultOptions: {
         queries: {
@@ -39,11 +39,11 @@ function getTRPCClient() {
           (op.direction === "down" && op.result instanceof Error),
       }),
       httpBatchLink({
-        url: "http://localhost:8080/trpc",
+        url: `${import.meta.env.VITE_SERVER_URL}/trpc`,
         fetch(url, options) {
           return fetch(url, {
             ...options,
-            credentials: 'include',
+            credentials: "include",
           });
         },
         headers() {

@@ -1,5 +1,6 @@
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/app/layout.config';
+import React from "react";
+import { HomeLayout } from "fumadocs-ui/layouts/home";
+import { baseOptions } from "@/app/layout.config";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {...baseOptions}
       nav={{
         ...baseOptions.nav,
-        transparentMode: 'top',
+        transparentMode: "top",
       }}
     >
       {children}

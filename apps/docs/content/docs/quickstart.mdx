@@ -2,3 +2,65 @@
 title: Quickstart Guide
 description: Install shopcn and start selling your components and templates!
 ---
+
+Installing shopcn is very easy, the backend and frontend are separate, so you need to host those separately. This was done because we want to allow you to build your own custom frontends that complements with the shopcn backend.
+
+Since the backend is also a Hono app, you can host it on Vercel too, along with your frontend.
+
+## Structure
+
+shopcn resides in a turborepo monorepo. Following are the components of this monorepo:
+
+- `server` - The backend, a Hono app
+- `app` - The frontend, a TanStack Start app
+- `docs` - The documentation site and homepage
+
+Now you will learn how to host these components separately.
+
+## Hosting the backend
+
+The backend is Vercel-ready, so you can deploy directly to Vercel. However, if you want to deploy to any other platform, you can do that too.
+
+Now run the following command to copy the environment variables to the `.env` file:
+
+```bash
+cd apps/server
+cp .env.example .env
+```
+
+You are required to fill in the environment variables in the `.env` file.
+
+- `DATABASE_URL`: The URL of your PostgreSQL database
+- `STRIPE_SECRET_KEY`: Stripe Secret Key
+- `STRIPE_WEBHOOK_SECRET`: Stripe Webhook Secret y
+- `GOOGLE_CLIENT_ID`: Google Client ID you can generate from the Google Cloud Console
+- `GOOGLE_CLIENT_SECRET`: The secret of your Google client
+- `BETTER_AUTH_SECRET`: The secret for BetterAuth
+- `FRONTEND_URL`: The URL of your frontend
+
+Once that's done, run the following command to push the database schema to your database:
+
+```bash
+bun run db:push
+```
+
+Once that's done, you're all ready to deploy. The app runs on port 8080, so make sure you're routing it properly.
+
+Once I get more time to work on this project, I will setup Docker to help with everything.
+
+## Hosting the frontend
+
+The frontend is a TanStack Start app, so you can deploy it to any platform.
+
+Now run the following command to copy the environment variables to the `.env` file:
+
+```bash
+cd apps/app
+cp .env.example .env
+```
+
+You are required to fill in the environment variables in the `.env` file.
+
+- `VITE_SERVER_URL`: The URL of your backend
+
+That's all needed to run the frontend properly.

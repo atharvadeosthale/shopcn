@@ -6,6 +6,7 @@ import { appRouter, createContext } from "./trpc";
 import { auth } from "./lib/auth";
 import { install } from "./routes/install";
 import "dotenv/config";
+import { env } from "./lib/env";
 
 const app = new Hono<{
   Variables: {
@@ -28,7 +29,7 @@ app.on(
   ["POST", "GET"],
   "/api/auth/*",
   cors({
-    origin: "http://localhost:3001", // replace with your origin
+    origin: env.FRONTEND_URL, // replace with your origin
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["POST", "GET", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
@@ -67,16 +68,21 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
-serve(
-  {
-    fetch: app.fetch,
-    port: 8080,
-  },
-  (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
-    console.log(
-      `BetterAuth is running on http://localhost:${info.port}/api/auth`
-    );
-    console.log(`TRPC is running on http://localhost:${info.port}/trpc`);
-  }
-);
+// If using vercel, don't serve this way
+if (!process.env.VERCEL) {
+  serve(
+    {
+      fetch: app.fetch,
+      port: parseInt(process.env.PORT!) || 8080,
+    },
+    (info) => {
+      console.log(`Server is running on http://localhost:${info.port}`);
+      console.log(
+        `BetterAuth is running on http://localhost:${info.port}/api/auth`
+      );
+      console.log(`TRPC is running on http://localhost:${info.port}/trpc`);
+    }
+  );
+}
+
+export default app;

@@ -17,9 +17,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo.start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo.start.api-request'
 import { Route as AdminDraftDraftIdRouteImport } from './routes/admin/draft/$draftId'
+import { Route as AdminUsersUserIdProductsRouteImport } from './routes/admin/users/$userId/products'
 import { ServerRoute as ApiDemoNamesServerRouteImport } from './routes/api.demo-names'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -54,6 +56,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/admin/users/',
+  path: '/admin/users/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
   path: '/demo/start/server-funcs',
@@ -69,6 +76,12 @@ const AdminDraftDraftIdRoute = AdminDraftDraftIdRouteImport.update({
   path: '/admin/draft/$draftId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersUserIdProductsRoute =
+  AdminUsersUserIdProductsRouteImport.update({
+    id: '/admin/users/$userId/products',
+    path: '/admin/users/$userId/products',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiDemoNamesServerRoute = ApiDemoNamesServerRouteImport.update({
   id: '/api/demo-names',
   path: '/api/demo-names',
@@ -85,6 +98,8 @@ export interface FileRoutesByFullPath {
   '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/admin/users': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/products': typeof AdminUsersUserIdProductsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -95,6 +110,8 @@ export interface FileRoutesByTo {
   '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/admin/users': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/products': typeof AdminUsersUserIdProductsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +124,8 @@ export interface FileRoutesById {
   '/admin/draft/$draftId': typeof AdminDraftDraftIdRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/products': typeof AdminUsersUserIdProductsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,6 +139,8 @@ export interface FileRouteTypes {
     | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/admin/users'
+    | '/admin/users/$userId/products'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,6 +151,8 @@ export interface FileRouteTypes {
     | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/admin/users'
+    | '/admin/users/$userId/products'
   id:
     | '__root__'
     | '/'
@@ -141,6 +164,8 @@ export interface FileRouteTypes {
     | '/admin/draft/$draftId'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/admin/users/'
+    | '/admin/users/$userId/products'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,6 +177,8 @@ export interface RootRouteChildren {
   AdminDraftDraftIdRoute: typeof AdminDraftDraftIdRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+  AdminUsersUserIdProductsRoute: typeof AdminUsersUserIdProductsRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/demo-names': typeof ApiDemoNamesServerRoute
@@ -219,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -238,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/draft/$draftId'
       fullPath: '/admin/draft/$draftId'
       preLoaderRoute: typeof AdminDraftDraftIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users/$userId/products': {
+      id: '/admin/users/$userId/products'
+      path: '/admin/users/$userId/products'
+      fullPath: '/admin/users/$userId/products'
+      preLoaderRoute: typeof AdminUsersUserIdProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -273,6 +314,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDraftDraftIdRoute: AdminDraftDraftIdRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
+  AdminUsersUserIdProductsRoute: AdminUsersUserIdProductsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

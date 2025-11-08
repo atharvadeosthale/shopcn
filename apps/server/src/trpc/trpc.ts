@@ -28,6 +28,14 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
       message: "You must be logged in to access this resource.",
     });
   }
+
+  if (ctx.user.banned) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "You are banned from accessing this resource.",
+    });
+  }
+
   return next({
     ctx: {
       session: ctx.session,

@@ -1,40 +1,44 @@
-import { ShoppingCart, User, LogOut } from 'lucide-react'
-import { authClient } from '@/lib/auth-client'
-import { useState, useEffect } from 'react'
-import { Link } from '@tanstack/react-router'
+import { ShoppingCart, User, LogOut } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { useState, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
 
-export default function Navbar() {
-  const [user, setUser] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
+type NavbarProps = {
+  variant?: "default" | "admin";
+};
+
+export default function Navbar({ variant = "default" }: NavbarProps) {
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const session = await authClient.getSession()
+        const session = await authClient.getSession();
         if (session.data) {
-          setUser(session.data.user)
+          setUser(session.data.user);
         }
       } catch (error) {
-        console.error('Error fetching user:', error)
+        console.error("Error fetching user:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    getUser()
-  }, [])
+    };
+    getUser();
+  }, []);
 
   const handleSignOut = async () => {
     try {
-      await authClient.signOut()
-      setUser(null)
-      window.location.href = '/'
+      await authClient.signOut();
+      setUser(null);
+      window.location.href = "/";
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error);
     }
-  }
+  };
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center space-x-8">
           <Link to="/" className="flex items-center space-x-3">
             <div className="relative">
@@ -45,42 +49,58 @@ export default function Navbar() {
               shopcn
             </span>
           </Link>
-          <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="relative text-foreground font-medium group">
-              Components
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></div>
-            </a>
-            <a
-              href="#"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
-            >
-              Templates
-            </a>
-            <a
-              href="#"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
-            >
-              Blocks
-            </a>
-            <a
-              href="#"
-              className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
-            >
-              Sell
-            </a>
-          </nav>
+          {variant === "default" ? (
+            <nav className="hidden md:flex items-center space-x-6">
+              <a
+                href="#"
+                className="relative text-foreground font-medium group"
+              >
+                Components
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></div>
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+              >
+                Templates
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+              >
+                Blocks
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+              >
+                Sell
+              </a>
+            </nav>
+          ) : (
+            <div className="hidden md:flex items-center">
+              <span className="text-xs font-medium px-2 py-1 rounded-md bg-muted/60 text-muted-foreground">
+                Admin
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex items-center space-x-4">
-          <button className="relative p-2 hover:bg-muted/60 rounded-xl transition-all duration-300 hover:scale-110 group">
-            <ShoppingCart className="h-5 w-5" />
-            <div className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              2
-            </div>
-          </button>
-          {!isLoading && (
-            user ? (
+          {variant === "default" && (
+            <button className="relative p-2 hover:bg-muted/60 rounded-xl transition-all duration-300 hover:scale-110 group">
+              <ShoppingCart className="h-5 w-5" />
+              <div className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                2
+              </div>
+            </button>
+          )}
+          {!isLoading &&
+            (user ? (
               <div className="flex items-center space-x-4">
-                <Link to="/dashboard" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+                >
                   <User className="h-5 w-5" />
                   <span className="hidden sm:block">{user.name}</span>
                 </Link>
@@ -93,16 +113,20 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Link to="/auth" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105">
+              <Link
+                to="/auth"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
+              >
                 <User className="h-5 w-5" />
                 <span className="hidden sm:block">Sign In</span>
               </Link>
-            )
+            ))}
+          {variant === "default" && (
+            <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <span className="relative font-medium">Sell Components</span>
+            </button>
           )}
-          <button className="relative overflow-hidden bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 group">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            <span className="relative font-medium">Sell Components</span>
-          </button>
         </div>
       </div>
     </header>

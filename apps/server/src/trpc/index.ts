@@ -4,6 +4,7 @@ import { paymentsRouter } from "./payments";
 import { usersRouter } from "./user";
 import { productsRouter } from "./products";
 import { cliRouter } from "./cli";
+import { adminRouter } from "./admin";
 
 export const appRouter = router({
   hello: publicProcedure
@@ -15,6 +16,7 @@ export const appRouter = router({
   users: usersRouter,
   products: productsRouter,
   cli: cliRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;
